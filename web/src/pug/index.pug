@@ -3,7 +3,7 @@ html
   include /../../static/assets/lib/ldui/pug/ldui.pug
   head
     +css("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
-    +css("/assets/lib/ldui/ldui.min.css")
+    +css("assets/lib/ldui/ldui.min.css")
     style(type="text/css"): :stylus
       html,body
         width: 100%
@@ -85,8 +85,8 @@ html
     +script("https://d3js.org/d3-color.v1.min.js")
     +script("https://d3js.org/d3-interpolate.v1.min.js")
     +script("https://d3js.org/d3-scale-chromatic.v1.min.js")
-    +script("/assets/lib/pdmap.tw/pdmaptw.min.js")
-    +script("/assets/lib/ldui/ldui.min.js")
+    +script("assets/lib/pdmap.tw/pdmaptw.min.js")
+    +script("assets/lib/ldui/ldui.min.js")
     script.
       var hills = !{JSON.stringify(hills)};
       var me = !{JSON.stringify(me)};

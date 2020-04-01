@@ -1,0 +1,33 @@
+{
+  "author": "Kirby Wu",
+  "name": "hill-100",
+  "license": "MIT",
+  "description": "selected 100 mountains in Taiwan.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/zbryikt/hill-100",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zbryikt/hill-100"
+  },
+  "engines": {
+    "node": ">=0.12.6",
+    "npm": ">=1.2.2"
+  },
+  "scripts": {
+    "start": "cd web; ../node_modules/.bin/lsc ../node_modules/template/server.ls"
+  },
+  "devDependencies": {
+    "LiveScript": ">=1.2.0",
+    "stylus": "^0.54.5",
+    "uglify-js": "=3.2.0",
+    "uglifycss": "0.0.29",
+    "template": "github:zbryikt/template#v2"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "colors": "^1.4.0",
+    "papaparse": "^5.1.1",
+    "progress": "^2.0.3",
+    "request": "^2.88.2"
+  }
+}

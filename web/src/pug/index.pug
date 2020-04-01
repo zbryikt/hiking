@@ -1,0 +1,159 @@
+doctype html
+html
+  include /../../static/assets/lib/ldui/pug/ldui.pug
+  head
+    +css("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    style(type="text/css"): :stylus
+      html,body
+        width: 100%
+        height: 100%
+        margin: 0
+        padding: 0
+      .hill
+        background: #eee
+        cursor: pointer
+        transition: order .35s ease-in-out
+        width: 90px
+      .hill .id
+        color: #f00
+      .hill.active
+        background: #1b5
+        color: #fff
+        .id
+          color: #fff
+        box-shadow: 0 2px 4px rgba(0,0,0,.3)
+      svg
+        width: 100%
+        height: 100%
+      path
+        fill: #eee
+        stroke: #ccc
+        stroke-width: 0.02
+      circle
+        fill: #999
+        fill-opacity: 0.3
+        stroke: #777
+        stroke-width: 0.02
+        stroke-opacity: 0.5
+      circle.active
+        fill: #f00
+        fill-opacity: 0.5
+        stroke: #d00
+        stroke-width: 0.02
+  body
+    include data.pug
+    include me.pug
+    .w-100.h-75.border-bottom.border-secondary(style="background:linear-gradient(45deg,#eee,#fdfeff)")
+      .row.h-100
+        .col-md-5.h-100
+          .vertical-center: .w-100.text-right
+            h1 小百岳履歷
+            p.text-muted 個人專屬的小百岳完登紀錄表
+        .col-md-6: .py-4.h-100
+          #map.map.w-100.h-100.mx-auto.rwd.mb-4
+    div
+      .d-block.text-center.sticky.z-fixed(style="margin-top:-1.25em;top:10px")
+        .btn-group.bg-white.shadow-sm.mr-2
+          .btn.btn-outline-secondary(onclick="reorder('id')") 依編號
+          .btn.btn-outline-secondary(onclick="reorder('location')") 依區域
+          .btn.btn-outline-secondary(onclick="reorder('altitude')") 依海拔
+          .btn.btn-outline-secondary(onclick="reorder('name')") 依名稱
+          .btn.btn-outline-secondary(onclick="reorder('schedule')") 依費時
+          .btn.btn-outline-secondary(onclick="reorder('date')") 依完登日
+        .btn.btn-outline-secondary.bg-white.shadow-sm.text-secondary 關於
+      .d-flex.flex-wrap.w-1024.mx-auto.rwd.my-4.justify-content-center
+        each hill in hills
+          .hill.m-1(data-id=`${hill.id}`, style=`order:${3000 - hill.altitude}`,onclick=`toggle('${hill.id}')`)
+            .aspect-ratio.ratio-1by1.position-relative: .vertical-center: .w-100.text-center
+              //-.position-absolute.bg-danger.text-white.text-sm.px-1(style="top:0;left:0") #{hill.id}
+              .text-sm.id(ld="id") #{hill.id}
+              div #{hill.name}
+              .text-sm #{hill.altitude}m
+
+    .ldcv.scroll: .base.w-480: .inner.card: +scope("detail").card-body
+      .d-flex.align-items-end.mb-3
+        h3.mb-0(ld="name")
+        div
+          span.text-muted.mx-2 /
+          span.text-muted(ld="location")
+      p(ld="desc")
+      .w-100.px-4: img.w-100(ld="map")
+
+    +script("https://d3js.org/d3.v4.js")
+    +script("https://d3js.org/topojson.v2.min.js")
+    +script("https://d3js.org/d3-color.v1.min.js")
+    +script("https://d3js.org/d3-interpolate.v1.min.js")
+    +script("https://d3js.org/d3-scale-chromatic.v1.min.js")
+    +script("/assets/lib/pdmap.tw/pdmaptw.min.js")
+    +script("/assets/lib/ldui/ldui.min.js")
+    script.
+      var hills = !{JSON.stringify(hills)};
+      var me = !{JSON.stringify(me)};
+    script: :lsc
+      smoothScroll!
+      hnodes = ld$.find \.hill
+      hnodes.map (n) -> 
+        id = n.getAttribute(\data-id)
+        if me.filter(->it.id == id).length => n.classList.add \active
+      order = {}
+      order.name = hills.map(->it.name).sort!
+      order.location = hills.map(->it.location).sort!
+
+      reorder = (k) ->
+        hnodes.map (n) ->
+          id = n.getAttribute(\data-id)
+          m = ld$.find n, '[ld=id]', 0
+          if !(ret = hills.filter(-> it.id ==  id).0) => return
+          if k == \id =>
+            n.style.order = Math.round(ret.id)
+            m.innerText = ret.id
+          else if k == \name =>
+            n.style.order = order.name.indexOf(ret.name)
+            m.innerText = ret.id
+          else if k == \location =>
+            n.style.order = order.location.indexOf(ret.location)
+            m.innerText = ret.location.substring(0,2)
+          else if k == \altitude =>
+            n.style.order = 3000 - ret.altitude
+            m.innerText = ret.id
+          else if k == \date => 
+            mret = me.filter(-> it.id == id).0
+            n.style.order = if !mret => 3000 else 3000 - mret.year
+            m.innerText = if mret => mret.year else '-'
+          else if k == \schedule =>
+            r = /([0-9.]+)小時/.exec(ret.schedule)
+            if r => v = +r.1 * 60
+            else 
+              r = /([0-9.]+)分鐘/.exec(ret.schedule)
+              if r => v = +r.1
+              else v = 0
+            m.innerText = "#{if v => v else ''}#{if r => '分鐘' else '-'}"
+            n.style.order = if r => 600 - Math.round(+v) else 600
+      ldcv = new ldCover do
+        root: \.ldcv
+      lc = {item: {}}
+      view = new ldView do
+        root: "[ld-scope=detail]"
+        handler: do
+          name: ({node}) -> node.innerText = lc.item.name
+          desc: ({node}) -> node.innerText = lc.item.brief
+          location: ({node}) -> node.innerText = lc.item.location
+          map: ({node}) -> if lc.item.map => node.setAttribute \src, lc.item.map
+      toggle = (id) ->
+        lc.item = (hills.filter(-> it.id == id).0 or {}) or {}
+        view.render!
+        ldcv.toggle!
+
+      obj = pdmaptw.create type: \county, root: \.map
+      obj.init!
+        .then ->
+          d3.select 'svg g' .selectAll \circle
+            .data hills
+            .enter!
+              .append \circle
+              .attr \r, 0.08
+              .attr \cx, -> pdmaptw.projection([it.lng, it.lat]).0
+              .attr \cy, -> pdmaptw.projection([it.lng, it.lat]).1
+              .attr \class, (d) -> if me.filter(->it.id == d.id).length => 'active' else ''
+          obj.fit!

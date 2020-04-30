@@ -1,3 +1,4 @@
+//- module
 doctype html
 html
   include /../../static/assets/lib/ldui/pug/ldui.pug
@@ -43,7 +44,7 @@ html
         stroke-width: 0.02
   body
     include data.pug
-    include me.pug
+    block data
     .w-100.h-75.border-bottom.border-secondary(style="background:linear-gradient(45deg,#eee,#fdfeff)")
       .row.h-100
         .col-md-5.h-100

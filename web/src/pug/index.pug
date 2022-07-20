@@ -1,0 +1,20 @@
+doctype html
+html
+  include @/@loadingio/bootstrap.ext/index.pug
+  include @/ldview/index.pug
+  head
+    +css([
+      {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
+      {name: "@loadingio/bootstrap.ext"}
+    ])
+  body
+    .w-1024.rwd.mx-auto.my-4
+      h4 百岳
+      ul
+        li: a(href="100m/kirby.html") Kirby
+        li: a(href="100m/sharon.html") Sharon
+      hr
+      h4 小百岳
+      ul
+        li: a(href="kirby.html") Kirby
+        li: a(href="sharon.html") Sharon

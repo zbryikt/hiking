@@ -1,10 +1,14 @@
 //- module
 doctype html
 html
-  include /../../static/assets/lib/ldui/pug/ldui.pug
+  include @/@loadingio/bootstrap.ext/index.pug
+  include @/ldview/index.pug
+  block source
   head
-    +css("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
-    +css("assets/lib/ldui/ldui.min.css")
+    +css([
+      {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
+      {name: "@loadingio/bootstrap.ext"}
+    ])
     style(type="text/css"): :stylus
       html,body
         width: 100%
@@ -43,14 +47,13 @@ html
         stroke: #d00
         stroke-width: 0.02
   body
-    include data.pug
     block data
     .w-100.h-75.border-bottom.border-secondary(style="background:linear-gradient(45deg,#eee,#fdfeff)")
       .row.h-100
         .col-md-5.h-100
           .vertical-center: .w-100.text-right
-            h1 小百岳履歷
-            p.text-muted #{name}專屬的小百岳完登紀錄表
+            h1 #{type}履歷
+            p.text-muted #{name}專屬的#{type}完登紀錄表
         .col-md-6: .py-4.h-100
           #map.map.w-100.h-100.mx-auto.rwd.mb-4
     div
@@ -81,18 +84,28 @@ html
       p(ld="desc")
       .w-100.px-4: img.w-100(ld="map")
 
-    +script("https://d3js.org/d3.v4.js")
-    +script("https://d3js.org/topojson.v2.min.js")
-    +script("https://d3js.org/d3-color.v1.min.js")
-    +script("https://d3js.org/d3-interpolate.v1.min.js")
-    +script("https://d3js.org/d3-scale-chromatic.v1.min.js")
-    +script("assets/lib/pdmap.tw/pdmaptw.min.js")
-    +script("assets/lib/ldui/ldui.min.js")
-    script.
-      var hills = !{JSON.stringify(hills)};
-      var me = !{JSON.stringify(me)};
-    script: :lsc
-      smoothScroll!
+    +script([
+      {name: "d3", version: "main", path: "build/d3.min.js"},
+      {name: "d3-color", version: "main", path: "build/d3-color.min.js"},
+      {name: "d3-interpolate", version: "main", path: "build/d3-interpolate.min.js"},
+      {name: "d3-scale-chromatic", version: "main", path: "build/d3-scale-chromatic.min.js"},
+      {name: "d3-geo", version: "main", path: "dist/d3-geo.min.js"},
+      {name: "d3-geo-projection", version: "main", path: "dist/d3-geo-projection.min.js"},
+      {name: "topojson", version: "main", path: "dist/topojson.min.js"},
+      {name: "@loadingio/ldquery"},
+      {name: "ldview"},
+      {name: "ldcover"},
+      {name: "pdmaptw"},
+      {name: "pdmaptw", path: "county.map.js"}
+    ])
+    script(type="module").
+      window.data = {
+        hills: !{JSON.stringify(hills)},
+        me: !{JSON.stringify(me)}
+      };
+    script(type="module"): :lsc
+      hills = window.data.hills
+      me = window.data.me
       hnodes = ld$.find \.hill
       hnodes.map (n) -> 
         id = n.getAttribute(\data-id)
@@ -101,7 +114,7 @@ html
       order.name = hills.map(->it.name).sort!
       order.location = hills.map(->it.location).sort!
 
-      reorder = (k) ->
+      window.reorder = reorder = (k) ->
         hnodes.map (n) ->
           id = n.getAttribute(\data-id)
           m = ld$.find n, '[ld=id]', 0
@@ -131,10 +144,12 @@ html
               else v = 0
             m.innerText = "#{if v => v else ''}#{if r => '分鐘' else '-'}"
             n.style.order = if r => 600 - Math.round(+v) else 600
-      ldcv = new ldCover do
+      ldcv = new ldcover do
         root: \.ldcv
+        resident: true
       lc = {item: {}}
-      view = new ldView do
+      console.log ld$.find("[ld-scope='detail']")
+      view = new ldview do
         root: "[ld-scope=detail]"
         handler: do
           name: ({node}) -> node.innerText = lc.item.name
@@ -146,15 +161,18 @@ html
         view.render!
         ldcv.toggle!
 
-      obj = pdmaptw.create type: \county, root: \.map
+      obj = new pdmaptw type: \county, root: \.map
       obj.init!
         .then ->
+          obj.fit!
+          console.log pdmaptw.projection!([122,23])
+          #d3.select 'svg' .append \g .attr \class, 'poi'
           d3.select 'svg g' .selectAll \circle
             .data hills
             .enter!
               .append \circle
               .attr \r, 0.08
-              .attr \cx, -> pdmaptw.projection([it.lng, it.lat]).0
-              .attr \cy, -> pdmaptw.projection([it.lng, it.lat]).1
+              .attr \cx, ->
+                pdmaptw.projection!([it.lng, it.lat]).0
+              .attr \cy, -> pdmaptw.projection!([it.lng, it.lat]).1
               .attr \class, (d) -> if me.filter(->it.id == d.id).length => 'active' else ''
-          obj.fit!

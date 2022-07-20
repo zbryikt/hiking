@@ -1,3 +1,6 @@
 extends /base.pug
+block sourec
+  - libLoader.root('../assets/lib')
+  include data.pug
 block data
   include data/sharon.pug

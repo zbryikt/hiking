@@ -1,33 +1,65 @@
 {
-  "author": "Kirby Wu",
-  "name": "hill-100",
+  "author": "zbryikt",
+  "name": "@zbryikt/hiking",
   "license": "MIT",
   "description": "selected 100 mountains in Taiwan.",
   "version": "0.0.1",
-  "homepage": "https://github.com/zbryikt/hill-100",
+  "homepage": "https://github.com/zbryikt/hiking",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zbryikt/hill-100"
+    "url": "https://github.com/zbryikt/hiking"
   },
   "engines": {
-    "node": ">=0.12.6",
-    "npm": ">=1.2.2"
+    "node": ">=14.11.0",
+    "npm": ">=8.1.0"
   },
   "scripts": {
-    "start": "cd web; ../node_modules/.bin/lsc ../node_modules/template/server.ls"
+    "start": "npx server -r web -o true"
   },
   "devDependencies": {
-    "LiveScript": ">=1.2.0",
-    "stylus": "^0.54.5",
-    "uglify-js": "=3.2.0",
-    "uglifycss": "0.0.29",
-    "template": "github:zbryikt/template#v2"
+    "@zbryikt/template": "^2.3.38",
+    "fedep": "^1.1.7",
+    "livescript": "^1.6.0"
   },
   "dependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.9",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.4",
+    "bootstrap": "^4.6.1",
     "cheerio": "^1.0.0-rc.3",
-    "colors": "^1.4.0",
+    "d3": "^4.0.0",
+    "d3-color": "^1.0.0",
+    "d3-geo": "^1.11.9",
+    "d3-geo-projection": "^2.8.1",
+    "d3-interpolate": "^1.0.0",
+    "d3-scale-chromatic": "^1.0.0",
+    "ldcover": "^3.2.1",
+    "ldview": "^1.2.1",
     "papaparse": "^5.1.1",
+    "pdmaptw": "^2.0.0",
     "progress": "^2.0.3",
-    "request": "^2.88.2"
+    "proxise": "^1.0.1",
+    "request": "^2.88.2",
+    "topojson": "^2.2.0"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "d3",
+      "d3-color",
+      "d3-interpolate",
+      "d3-scale-chromatic",
+      "d3-geo",
+      "d3-geo-projection",
+      "topojson",
+      "bootstrap",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/debounce.js",
+      "@loadingio/ldquery",
+      "ldcover",
+      "ldview",
+      "pdmaptw",
+      "proxise"
+    ]
   }
 }

@@ -37,7 +37,7 @@
     "ldcover": "^3.2.1",
     "ldview": "^1.2.1",
     "papaparse": "^5.1.1",
-    "pdmaptw": "^2.0.0",
+    "pdmaptw": "^2.0.1",
     "progress": "^2.0.3",
     "proxise": "^1.0.1",
     "request": "^2.88.2",

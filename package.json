@@ -25,6 +25,7 @@
     "@loadingio/bootstrap.ext": "^0.0.9",
     "@loadingio/debounce.js": "^1.0.1",
     "@loadingio/ldquery": "^3.0.4",
+    "@zbryikt/deploy": "^0.0.1",
     "bootstrap": "^4.6.1",
     "cheerio": "^1.0.0-rc.3",
     "d3": "^4.0.0",

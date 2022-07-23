@@ -202,7 +202,8 @@ var hills = [{"id":"001","name":"玉山","altitude":"3952","loation":"南投縣�
 pug_html = pug_html + "\u003Chead\u003E";
 pug_mixins["css"]([
       {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
-      {name: "@loadingio/bootstrap.ext"}
+      {name: "@loadingio/bootstrap.ext"},
+      {name: "ldcover"}
     ]);
 pug_html = pug_html + "\u003Cstyle type=\"text\u002Fcss\"\u003Ehtml,body{width:100%;height:100%;margin:0;padding:0}.hill{background:#eee;cursor:pointer;transition:order .35s ease-in-out;width:90px}.hill .id{color:red}.hill.active{background:#1b5;color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.3)}.hill.active .id{color:#fff}svg{width:100%;height:100%}path{fill:#eee;stroke:#ccc;stroke-width:.02}circle{fill:#999;fill-opacity:.3;stroke:#777;stroke-width:.02;stroke-opacity:.5}circle.active{fill:red;fill-opacity:.5;stroke:#d00;stroke-width:.02}\u003C\u002Fstyle\u003E\u003C\u002Fhead\u003E\u003Cbody\u003E";
 var name = "科比";

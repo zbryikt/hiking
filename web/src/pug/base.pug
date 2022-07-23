@@ -156,7 +156,7 @@ html
           desc: ({node}) -> node.innerText = lc.item.brief
           location: ({node}) -> node.innerText = lc.item.location
           map: ({node}) -> if lc.item.map => node.setAttribute \src, lc.item.map
-      toggle = (id) ->
+      window.toggle = toggle = (id) ->
         lc.item = (hills.filter(-> it.id == id).0 or {}) or {}
         view.render!
         ldcv.toggle!
